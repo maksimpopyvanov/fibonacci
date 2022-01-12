@@ -35,7 +35,7 @@ func main() {
 	proto.RegisterFibonacciServer(s, grpcSrv)
 
 	go func() {
-		l, err := net.Listen("tcp", viper.GetString("grpcserver.addr"))
+		l, err := net.Listen("tcp", ":"+viper.GetString("grpcserver.port"))
 
 		if err != nil {
 			log.Fatalf("error occured while running grpc server: %s", err.Error())

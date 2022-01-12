@@ -2,7 +2,7 @@ httpserver:
   port: "8080"
 
 grpcserver:
-  addr: "localhost:8000"
+  port: "8000"
 
 redis:
-  addr: "localhost:6379"
+  addr: "db:6379"

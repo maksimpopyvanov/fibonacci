@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  fibonacci:
+    build: ./
+    command: /main
+    ports:
+      - 8080:8080
+      - 8000:8000
+    depends_on:
+      - db
+  db:
+    restart: always
+    image: redis:latest
+    ports:
+      - 6379:6379
