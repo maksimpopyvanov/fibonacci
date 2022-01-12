@@ -13,7 +13,7 @@ make run
 
 -POST /sequence  
 Входные параметры в формате json: start number, end number- начальный и конечный порядковые номера возвращаемой последовательности(от 0 до 93)  
-Выходные данные в формате json: '{"index":"number", "index":"number",...}'
+Выходные данные в формате json: '{"index":number, "index":number,...}'
 
 ## gRPC
 Call GetSequence  
