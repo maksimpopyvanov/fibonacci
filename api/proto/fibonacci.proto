@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-package api;
+package fibonacci;
+
+option go_package = "api/proto";
 
 service fibonacci {
     rpc GetSequence(AddRequest) returns (AddResponse) {}
 }
 
 message AddRequest {
-    int start = 1;
-    int end = 2;
+    int64 start = 1;
+    int64 end = 2;
 }
 
 message AddResponse {
-    map[int]int result = 1;
+    map<int64, uint64> result = 1;
 }

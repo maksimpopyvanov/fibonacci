@@ -22,12 +22,8 @@ func (h *Handler) getSequence(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "invalid parametrs", http.StatusBadRequest)
 			return
 		}
-		output := make(map[int]uint64)
 
-		for index := input.End; index >= input.Start; index-- {
-			number := h.service.GetNumberFibonacci(index)
-			output[index] = number
-		}
+		output := h.repos.GetSequence(input)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(output)
 	} else {

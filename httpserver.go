@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-type Server struct {
+type HTTPServer struct {
 	httpServer *http.Server
 }
 
-func (s *Server) Run(port string, handler http.Handler) error {
+func (s *HTTPServer) Run(port string, handler http.Handler) error {
 	s.httpServer = &http.Server{
 		Addr:           ":" + port,
 		Handler:        handler,

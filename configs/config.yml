@@ -1,4 +1,8 @@
-port: "8080"
+httpserver:
+  port: "8080"
+
+grpcserver:
+  addr: "localhost:8000"
 
 redis:
   addr: "localhost:6379"

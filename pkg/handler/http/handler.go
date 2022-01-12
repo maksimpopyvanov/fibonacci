@@ -1,16 +1,16 @@
 package handler
 
 import (
-	"fibonacci/pkg/service"
+	"fibonacci/pkg/repository"
 	"net/http"
 )
 
 type Handler struct {
-	service *service.Service
+	repos *repository.Repository
 }
 
-func NewHandler(service *service.Service) *Handler {
-	return &Handler{service: service}
+func NewHandler(repos *repository.Repository) *Handler {
+	return &Handler{repos: repos}
 }
 
 func (h *Handler) Routes() *http.ServeMux {

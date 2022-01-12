@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fibonacci"
 	"strconv"
 
 	"github.com/go-redis/redis/v8"
@@ -34,4 +35,32 @@ func (r *Repository) CheckNumber(index string) (uint64, error) {
 
 func (r *Repository) SetNumber(index string, number string) {
 	r.rdb.Set(r.ctx, index, number, 0)
+}
+
+func (r *Repository) GetSequence(input *fibonacci.Input) map[int64]uint64 {
+	output := make(map[int64]uint64)
+	for index := input.End; index >= input.Start; index-- {
+		number := r.GetNumberFibonacci(index)
+		output[index] = number
+	}
+	return output
+}
+
+func (r *Repository) GetNumberFibonacci(index int64) uint64 {
+	if index == 0 {
+		return 0
+	} else if index == 1 {
+		return 1
+	}
+
+	if number, err := r.CheckNumber(strconv.FormatInt(index, 10)); number == 0 && err == nil {
+		number = r.GetNumberFibonacci(index-2) + r.GetNumberFibonacci(index-1)
+		r.SetNumber(strconv.FormatInt(index, 10), strconv.FormatUint(number, 10))
+		return number
+	} else if number == 0 && err != nil {
+		number = r.GetNumberFibonacci(index-2) + r.GetNumberFibonacci(index-1)
+		return number
+	} else {
+		return number
+	}
 }

@@ -3,13 +3,15 @@ package main
 import (
 	"fibonacci"
 	"log"
+	"net"
 
+	"fibonacci/api/proto"
 	handler "fibonacci/pkg/handler/http"
 	"fibonacci/pkg/repository"
-	"fibonacci/pkg/service"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -24,15 +26,32 @@ func main() {
 	})
 
 	repos := repository.NewRepository(rdb)
-	service := service.NewService(repos)
-	handler := handler.NewHandler(service)
+	handler := handler.NewHandler(repos)
 
-	srv := new(fibonacci.Server)
-	if err := srv.Run(viper.GetString("port"), handler.Routes()); err != nil {
+	srv := new(fibonacci.HTTPServer)
+
+	s := grpc.NewServer()
+	grpcSrv := proto.NewGRPCServer(repos)
+	proto.RegisterFibonacciServer(s, grpcSrv)
+
+	go func() {
+		l, err := net.Listen("tcp", viper.GetString("grpcserver.addr"))
+
+		if err != nil {
+			log.Fatalf("error occured while running grpc server: %s", err.Error())
+		}
+
+		if err := s.Serve(l); err != nil {
+			log.Fatalf("error occured while running grpc server: %s", err.Error())
+		}
+	}()
+
+	if err := srv.Run(viper.GetString("httpserver.port"), handler.Routes()); err != nil {
 		log.Fatalf("error occured while running http server: %s", err.Error())
 	}
 
 }
+
 func initConfig() error {
 	viper.AddConfigPath("./configs")
 	viper.SetConfigName("config")

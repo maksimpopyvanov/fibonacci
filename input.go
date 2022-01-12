@@ -1,6 +1,6 @@
 package fibonacci
 
 type Input struct {
-	Start int `json:"start"`
-	End   int `json:"end"`
+	Start int64 `json:"start"`
+	End   int64 `json:"end"`
 }
