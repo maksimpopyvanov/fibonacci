@@ -15,7 +15,7 @@ func NewGRPCServer(repos *repository.Repository) *GRPCServer {
 }
 
 func (s *GRPCServer) GetSequence(ctx context.Context, req *AddRequest) (*AddResponse, error) {
-	if req.GetStart() < 0 || req.GetEnd() > 93 {
+	if req.GetStart() < 0 || req.GetEnd() > 93 || req.GetEnd() < req.GetStart() {
 		return nil, &rpcError{}
 	}
 	input := new(fibonacci.Input)
