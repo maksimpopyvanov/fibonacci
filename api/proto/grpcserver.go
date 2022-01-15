@@ -1,6 +1,6 @@
 package proto
 
-import (
+/* import (
 	"context"
 	"fibonacci"
 	"fibonacci/pkg/repository"
@@ -36,4 +36,4 @@ type rpcError struct{}
 
 func (e *rpcError) Error() string {
 	return "invalid parametrs"
-}
+} */

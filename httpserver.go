@@ -14,7 +14,7 @@ func (s *HTTPServer) Run(port string, handler http.Handler) error {
 		Addr:           ":" + port,
 		Handler:        handler,
 		MaxHeaderBytes: 1 << 20,
-		WriteTimeout:   10 * time.Second,
+		WriteTimeout:   1000 * time.Second,
 		ReadTimeout:    10 * time.Second,
 	}
 
