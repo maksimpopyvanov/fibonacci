@@ -18,7 +18,7 @@ func (h *Handler) getSequence(w http.ResponseWriter, r *http.Request) {
 		input := new(fibonacci.Input)
 		err = json.Unmarshal([]byte(body), &input)
 
-		if err != nil || input.End < input.Start {
+		if err != nil || input.End < input.Start || input.End > 10000 || input.Start < 0 {
 			http.Error(w, "invalid parametrs", http.StatusBadRequest)
 			return
 		}

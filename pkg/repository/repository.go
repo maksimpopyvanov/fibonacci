@@ -31,20 +31,16 @@ func (r *Repository) GetNumberFromCache(index string) (string, error) {
 	return number, nil
 }
 
-func (r *Repository) SetNumberToCache(index string, number string) {
-	r.rdb.Set(r.ctx, index, number, 0)
-}
-
 func (r *Repository) GetSequence(input *fibonacci.Input) map[int64]string {
-	output := make(map[int64]string)
+	sequence := make(map[int64]string)
 	for index := input.End; index >= input.Start; index-- {
 		number := r.GetNumberFibonacci(index)
 		if number == "" {
 			return nil
 		}
-		output[index] = number
+		sequence[index] = number
 	}
-	return output
+	return sequence
 }
 
 func (r *Repository) GetNumberFibonacci(index int64) string {
@@ -55,33 +51,29 @@ func (r *Repository) GetNumberFibonacci(index int64) string {
 	}
 
 	if number, err := r.GetNumberFromCache(strconv.FormatInt(index, 10)); number == "0" && err == nil {
-		penultimateNumber, success := new(big.Int).SetString(r.GetNumberFibonacci(index-2), 10)
-		if success {
-			lastNumber, success := new(big.Int).SetString(r.GetNumberFibonacci(index-1), 10)
-			if success {
-				number = new(big.Int).Add(penultimateNumber, lastNumber).String()
-				r.SetNumberToCache(strconv.FormatInt(index, 10), number)
-				return number
-			} else {
-				return ""
-			}
-		} else {
-			return ""
+		number = r.AddPreviousNumbers(index)
+		if number != "" {
+			r.rdb.Set(r.ctx, strconv.FormatInt(index, 10), number, 0)
+			return number
 		}
+		return number
 	} else if number == "0" && err != nil {
-		penultimateNumber, success := new(big.Int).SetString(r.GetNumberFibonacci(index-2), 10)
-		if success {
-			lastNumber, success := new(big.Int).SetString(r.GetNumberFibonacci(index-1), 10)
-			if success {
-				number = new(big.Int).Add(penultimateNumber, lastNumber).String()
-				return number
-			} else {
-				return ""
-			}
-		} else {
-			return ""
-		}
+		number = r.AddPreviousNumbers(index)
+		return number
 	} else {
 		return number
 	}
+}
+
+func (r *Repository) AddPreviousNumbers(index int64) string {
+	lastNumber, success := new(big.Int).SetString(r.GetNumberFibonacci(index-1), 10)
+	if success {
+		penultimateNumber, success := new(big.Int).SetString(r.GetNumberFibonacci(index-2), 10)
+		if success {
+			number := new(big.Int).Add(penultimateNumber, lastNumber).String()
+			return number
+		}
+		return ""
+	}
+	return ""
 }
