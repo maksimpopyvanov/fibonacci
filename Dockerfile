@@ -6,6 +6,6 @@ RUN go version
 
 COPY . .
 
-RUN go build -o /main cmd/main.go
+RUN go build -o /server cmd/server/main.go && go build -o /client cmd/client/main.go
 
-ENTRYPOINT [ "/main" ]
+ENTRYPOINT [ "/server" ]

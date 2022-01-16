@@ -51,16 +51,21 @@ func (r *Repository) GetNumberFibonacci(index int64) string {
 	}
 
 	if number, err := r.GetNumberFromCache(strconv.FormatInt(index, 10)); number == "0" && err == nil {
+		//Достучались до кеша, числа с данным индексом в нем нет => нужно вычислить значение и добавить в кеш
 		number = r.AddPreviousNumbers(index)
 		if number != "" {
+			//Нет ошибки в сложении 2х предыдущих чисел
 			r.rdb.Set(r.ctx, strconv.FormatInt(index, 10), number, 0)
 			return number
 		}
+		//Ошибка в сложении двух предыдущих чисел
 		return number
 	} else if number == "0" && err != nil {
+		//Ошибка в получении значения из кеша
 		number = r.AddPreviousNumbers(index)
 		return number
 	} else {
+		//Возвращаем значение из кеша
 		return number
 	}
 }

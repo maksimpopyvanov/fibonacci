@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package fibonacci;
 
-option go_package = "api/proto";
+option go_package = "pkg/api";
 
 service fibonacci {
     rpc GetSequence(Request) returns (Response) {}

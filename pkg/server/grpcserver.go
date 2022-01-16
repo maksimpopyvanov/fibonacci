@@ -1,8 +1,9 @@
-package proto
+package server
 
 import (
 	"context"
 	"fibonacci"
+	"fibonacci/pkg/api"
 	"fibonacci/pkg/repository"
 )
 
@@ -14,15 +15,15 @@ func NewGRPCServer(repos *repository.Repository) *GRPCServer {
 	return &GRPCServer{repos: repos}
 }
 
-func (s *GRPCServer) GetSequence(ctx context.Context, req *Request) (*Response, error) {
+func (s *GRPCServer) GetSequence(ctx context.Context, req *api.Request) (*api.Response, error) {
 	if req.GetStart() < 0 || req.GetEnd() > 10000 || req.GetEnd() < req.GetStart() {
-		return nil, &rpcInvalidParametrs{}
+		return nil, &rpcInvalidParametrsError{}
 	}
 	input := new(fibonacci.Input)
 	input.Start = req.GetStart()
 	input.End = req.GetEnd()
 
-	response := new(Response)
+	response := new(api.Response)
 
 	if response.Result = s.repos.GetSequence(input); response.Result == nil {
 		return nil, &rpcInternalError{}
@@ -32,12 +33,10 @@ func (s *GRPCServer) GetSequence(ctx context.Context, req *Request) (*Response, 
 
 }
 
-func (s *GRPCServer) mustEmbedUnimplementedFibonacciServer() {}
-
-type rpcInvalidParametrs struct{}
+type rpcInvalidParametrsError struct{}
 type rpcInternalError struct{}
 
-func (e *rpcInvalidParametrs) Error() string {
+func (e *rpcInvalidParametrsError) Error() string {
 	return "invalid parametrs"
 }
 

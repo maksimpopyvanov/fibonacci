@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fibonacci"
 	"log"
 	"net"
 
-	"fibonacci/api/proto"
+	"fibonacci/pkg/api"
 	handler "fibonacci/pkg/handler/http"
 	"fibonacci/pkg/repository"
+	"fibonacci/pkg/server"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
@@ -28,11 +28,11 @@ func main() {
 	repos := repository.NewRepository(rdb)
 	handler := handler.NewHandler(repos)
 
-	srv := new(fibonacci.HTTPServer)
+	srv := new(server.HTTPServer)
 
 	s := grpc.NewServer()
-	grpcSrv := proto.NewGRPCServer(repos)
-	proto.RegisterFibonacciServer(s, grpcSrv)
+	grpcSrv := server.NewGRPCServer(repos)
+	api.RegisterFibonacciServer(s, grpcSrv)
 
 	go func() {
 		l, err := net.Listen("tcp", ":"+viper.GetString("grpcserver.port"))
