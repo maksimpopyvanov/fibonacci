@@ -14,6 +14,7 @@ func TestGetSequence(t *testing.T) {
 		expected map[int64]string
 	}{
 		{input: &fibonacci.Input{Start: -1, End: 6}, expected: nil},
+		{input: &fibonacci.Input{Start: 854, End: 2}, expected: nil},
 		{input: &fibonacci.Input{Start: 0, End: 10001}, expected: nil},
 		{input: &fibonacci.Input{Start: 4, End: 7}, expected: map[int64]string{4: "3", 5: "5", 6: "8", 7: "13"}},
 	}
