@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fibonacci"
 	"fibonacci/pkg/api"
 	"fibonacci/pkg/repository"
@@ -17,7 +18,7 @@ func NewGRPCServer(repos *repository.Repository) *GRPCServer {
 
 func (s *GRPCServer) GetSequence(ctx context.Context, req *api.Request) (*api.Response, error) {
 	if req.GetStart() < 0 || req.GetEnd() > 10000 || req.GetEnd() < req.GetStart() {
-		return nil, &rpcInvalidParametrsError{}
+		return nil, errors.New("invalid parametrs")
 	}
 	input := new(fibonacci.Input)
 	input.Start = req.GetStart()
@@ -26,20 +27,9 @@ func (s *GRPCServer) GetSequence(ctx context.Context, req *api.Request) (*api.Re
 	response := new(api.Response)
 
 	if response.Result = s.repos.GetSequence(input); response.Result == nil {
-		return nil, &rpcInternalError{}
+		return nil, errors.New("internal error")
 	}
 
 	return response, nil
 
-}
-
-type rpcInvalidParametrsError struct{}
-type rpcInternalError struct{}
-
-func (e *rpcInvalidParametrsError) Error() string {
-	return "invalid parametrs"
-}
-
-func (e *rpcInternalError) Error() string {
-	return "internal error"
 }

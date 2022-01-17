@@ -9,7 +9,6 @@ import (
 	"fibonacci/pkg/repository"
 	"fibonacci/pkg/server"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )
@@ -19,11 +18,16 @@ func main() {
 		log.Fatalf("error initializing configs: %s", err.Error())
 	}
 
-	rdb := redis.NewClient(&redis.Options{
+	rdb, err := repository.NewRedisClient(repository.Config{
 		Addr:     viper.GetString("redis.addr"),
-		Password: "",
 		DB:       0,
+		Password: "",
 	})
+
+	//Проверка на доступность кеша
+	if err != nil {
+		log.Fatalf("failed to initialize cache: %s", err.Error())
+	}
 
 	repos := repository.NewRepository(rdb)
 	handler := handler.NewHandler(repos)
