@@ -32,12 +32,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	//Создание клиентского соединения
 	conn, err := grpc.Dial(":"+viper.GetString("grpcserver.port"), grpc.WithInsecure())
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	//Создание grpc клиента
 	client := api.NewFibonacciClient(conn)
 	res, err := client.GetSequence(context.Background(), &api.Request{Start: start, End: end})
 	if err != nil {

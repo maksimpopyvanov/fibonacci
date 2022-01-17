@@ -29,7 +29,7 @@ func main() {
 		log.Fatalf("failed to initialize cache: %s", err.Error())
 	}
 
-	repos := repository.NewRepository(rdb)
+	repos := repository.NewRepository(rdb) //Слой для работы с кешем
 	handler := handler.NewHandler(repos)
 
 	srv := new(server.HTTPServer)

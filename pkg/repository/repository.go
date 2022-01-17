@@ -24,15 +24,23 @@ func NewRepository(redis *redis.Client) *Repository {
 func (r *Repository) GetNumberFromCache(index string) (string, error) {
 	number, err := r.rdb.Get(r.ctx, index).Result()
 	if err == redis.Nil {
+		//Нет значения в кеше
 		return "0", nil
 	} else if err != nil {
+		//Ошибка
 		return "0", err
 	}
+	//Получено значение из кеша
 	return number, nil
 }
 
 func (r *Repository) GetSequence(input *fibonacci.Input) map[int64]string {
+	if input.End < input.Start || input.End > 10000 || input.Start < 0 {
+		return nil
+	}
+
 	sequence := make(map[int64]string)
+
 	for index := input.End; index >= input.Start; index-- {
 		number := r.GetNumberFibonacci(index)
 		if number == "" {

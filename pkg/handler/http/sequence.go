@@ -9,6 +9,7 @@ import (
 
 func (h *Handler) getSequence(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
+		//Тело запроса
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
