@@ -13,6 +13,10 @@ make run
 ```bash
 make getSequence start= end=
 ```
+## Для запуска тестирования метода получения последовательности
+```bash
+make test
+```
 
 ## HTTP REST
 
